@@ -1,1 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lola Ola's Digital Vault</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #e8f5e9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 16px;
+    }
+    .vault-card {
+      background: linear-gradient(135deg, #1b5e20, #2e7d32);
+      color: #ffffff;
+      width: 100%;
+      max-width: 380px;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .header h2 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+    .badge {
+      background: #4caf50;
+      color: white;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+    .user-info {
+      margin-bottom: 20px;
+    }
+    .user-info .role {
+      font-size: 12px;
+      opacity: 0.8;
+      text-transform: uppercase;
+    }
+    .user-info .name {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .balance-display {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .balance-display .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+    .balance-display .amount {
+      font-size: 30px;
+      font-weight: 800;
+      color: #ffd54f;
+      margin-top: 6px;
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .quick-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+    .btn {
+      background: #ffffff;
+      color: #1b5e20;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn:active {
+      transform: scale(0.96);
+      background: #e0e0e0;
+    }
+    .input-group {
+      display: flex;
+      gap: 8px;
+    }
+    .input-group input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      font-size: 14px;
+      outline: none;
+    }
+    .btn-send {
+      background: #ffd54f;
+      color: #1b5e20;
+    }
+    .history {
+      margin-top: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 12px;
+      max-height: 110px;
+      overflow-y: auto;
+      font-size: 12px;
+    }
+    .history-title {
+      font-weight: bold;
+      margin-bottom: 6px;
+      opacity: 0.8;
+    }
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .reset-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 11px;
+      width: 100%;
+      margin-top: 12px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
 
+  <div class="vault-card">
+    <div class="header">
+      <h2>Lola Pay</h2>
+      <span class="badge">ACTIVE</span>
+    </div>
+
+    <div class="user-info">
+      <div class="role">Card Holder</div>
+      <div class="name">Lola Ola 👵🏽</div>
+    </div>
+
+    <div class="balance-display">
+      <div class="label">Available Digital Money</div>
+      <div class="amount" id="balanceDisplay">₱ 1,000,000,000.00</div>
+    </div>
+
+    <div class="actions">
+      <div class="quick-btns">
+        <button class="btn" onclick="spendMoney(500, 'Baon / Snack')">- ₱500</button>
+        <button class="btn" onclick="spendMoney(5000, 'Shopping')">- ₱5,000</button>
+        <button class="btn" onclick="spendMoney(100000, 'Toy/Gift')">- ₱100k</button>
+      </div>
+
+      <div class="input-group">
+        <input type="number" id="customAmount" placeholder="Custom amount..." min="1" />
+        <button class="btn btn-send" onclick="sendCustom()">Pay / Give</button>
+      </div>
+    </div>
+
+    <div class="history">
+      <div class="history-title">Transaction History</div>
+      <div id="historyList">
+        <div class="history-item"><span>Card Activated</span> <span>Ready</span></div>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetBalance()">↺ Reset Balance to ₱1 Billion</button>
+  </div>
+
+  <script>
+    const INITIAL_BALANCE = 1000000000;
+    let currentBalance = parseFloat(localStorage.getItem('lola_balance')) || INITIAL_BALANCE;
+
+    function forma
